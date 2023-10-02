@@ -38,10 +38,20 @@ export class RestaurantsService {
 
   // Get a single restaurant => GET /restaurants/:id
   async findByID(id: string): Promise<Restaurant> {
+    const isValidId = mongoose.Types.ObjectId.isValid(id);
+
+    if (!isValidId) {
+      throw new NotFoundException(
+        'Wrong mongoose ID error. Please enter a valid ID',
+      );
+    }
+
     const restaurant = await this.restaurantModel.findById(id);
+
     if (!restaurant) {
       throw new NotFoundException('Restaurant not found');
     }
+
     return restaurant;
   }
 
