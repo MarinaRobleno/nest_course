@@ -59,9 +59,13 @@ export class RestaurantsController {
   async deleteRestaurant(
     @Param('id') // HERE we import the param
     id: string,
-  ): Promise<Restaurant> {
+  ): Promise<{ deleted: Boolean }> {
     await this.restaurantsService.findByID(id);
 
-    return this.restaurantsService.delete(id);
+    const restaurant = this.restaurantsService.delete(id);
+
+    if (restaurant) {
+      return { deleted: true };
+    }
   }
 }
