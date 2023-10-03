@@ -1,4 +1,5 @@
 const nodeGeocoder = require('node-geocoder');
+import { JwtService } from '@nestjs/jwt';
 
 export default class APIFeatures {
   static async getRestaurantLocation(address: string) {
@@ -27,5 +28,14 @@ export default class APIFeatures {
     } catch (error) {
       console.log(error.message);
     }
+  }
+
+  static async assignJWTToken(
+    userId: string,
+    jwtService: JwtService,
+  ): Promise<string> {
+    const payload = { id: userId };
+    const token = await jwtService.sign(payload);
+    return token;
   }
 }
