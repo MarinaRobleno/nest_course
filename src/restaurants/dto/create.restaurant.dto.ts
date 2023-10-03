@@ -4,8 +4,10 @@ import {
   IsEmail,
   IsPhoneNumber,
   IsEnum,
+  IsEmpty,
 } from 'class-validator';
 import { Category } from '../schemas/restaurant.schema';
+import { User } from 'src/auth/schemas/user.schema';
 
 export class CreateRestaurantDto {
   @IsNotEmpty() // Means that this field cannot be empty
@@ -34,4 +36,7 @@ export class CreateRestaurantDto {
   readonly category: Category;
 
   readonly images?: object[];
+
+  @IsEmpty({ message: 'You cannot provide the user Id' })
+  readonly user?: User;
 }

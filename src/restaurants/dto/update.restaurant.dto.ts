@@ -1,5 +1,6 @@
-import { IsEmail, IsEnum, IsPhoneNumber, IsString, IsOptional } from 'class-validator';
+import { IsEmail, IsEnum, IsPhoneNumber, IsString, IsOptional, IsEmpty } from 'class-validator';
 import { Category } from '../schemas/restaurant.schema';
+import { User } from 'src/auth/schemas/user.schema';
 
 export class UpdateRestaurantDto {
   // here every field must be optional
@@ -28,4 +29,7 @@ export class UpdateRestaurantDto {
   readonly category: Category;
 
   readonly images?: object[];
+
+  @IsEmpty({ message: 'You cannot provide the user Id' })
+  readonly user?: User;
 }
