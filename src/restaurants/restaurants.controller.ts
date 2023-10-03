@@ -47,7 +47,6 @@ export class RestaurantsController {
 
   // Get a restaurant by id => GET /restaurants/:id
   @Get(':id')
-  @UseGuards(AuthGuard())
   async getRestaurant(
     @Param('id') // HERE we import the param
     id: string,
@@ -65,9 +64,8 @@ export class RestaurantsController {
     restaurant: UpdateRestaurantDto,
     @CurrentUser() user: User,
   ): Promise<Restaurant> {
-
     const rest = await this.restaurantsService.findByID(id);
-    
+
     // Limit the edition of the restaurant to the owner
     if (rest.user.toString() !== user._id.toString()) {
       throw new ForbiddenException(
