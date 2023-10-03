@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { MealService } from './meal.service';
 import { CreateMealDto } from './dto/create.meal.dto';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { User } from 'src/auth/schemas/user.schema';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../auth/schemas/user.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { Meal } from './schemas/meal.schema';
 import { UpdateMealDto } from './dto/update.meal.dto';
