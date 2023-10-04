@@ -4,11 +4,10 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Restaurant } from './schemas/restaurant.schema';
 import { Model } from 'mongoose';
 import APIFeatures from '../utils/apiFeatures.utils';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 const mockRestaurant = {
-  _id: {
-    $oid: '651af65463f81548025df969',
-  },
+  _id: '651af65463f81548025df969',
   name: 'Bauch-Hilll',
   description: 'Prsn outsd 3-whl mv inj in clsn w statnry obj nontraf, sqla',
   email: 'gmarley7@fotki.com',
@@ -38,6 +37,9 @@ const user = {
 const mockRestaurantService = {
   find: jest.fn(),
   create: jest.fn(),
+  findById: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
+  findByIdAndDelete: jest.fn(),
 };
 
 describe('RestaurantsService', () => {
@@ -100,6 +102,60 @@ describe('RestaurantsService', () => {
         .mockImplementationOnce(() => Promise.resolve(mockRestaurant as any));
 
       const result = await service.create(newRestaurant as any, user as any);
+      expect(result).toEqual(mockRestaurant);
+    });
+  });
+
+  describe('findById', () => {
+    it('should get restaurant by Id', async () => {
+      jest
+        .spyOn(model, 'findById')
+        .mockResolvedValueOnce(mockRestaurant as any);
+
+      const result = await service.findByID(mockRestaurant._id);
+      expect(result).toEqual(mockRestaurant);
+    });
+
+    it('should throw wrong moongose id error', async () => {
+      await expect(service.findByID('wrongid')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('should throw restaruant not found error', async () => {
+      const mockError = new NotFoundException('Restaurant not found.');
+      jest.spyOn(model, 'findById').mockRejectedValue(mockError);
+
+      await expect(service.findByID(mockRestaurant._id)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('updateById', () => {
+    it('should update the restaurant', async () => {
+      const restaurant = { ...mockRestaurant, name: 'Updated name' };
+      const updateRestaurant = { name: 'Updated name' };
+
+      jest
+        .spyOn(model, 'findByIdAndUpdate')
+        .mockResolvedValueOnce(restaurant as any);
+
+      const updatedRestaurant = await service.update(
+        restaurant._id,
+        updateRestaurant as any,
+      );
+      expect(updatedRestaurant.name).toEqual(updateRestaurant.name);
+    });
+  });
+
+  describe('deleteById', () => {
+    it('should delete the restaurant', async () => {
+      jest
+        .spyOn(model, 'findByIdAndDelete')
+        .mockResolvedValueOnce(mockRestaurant as any);
+
+      const result = await service.delete(mockRestaurant._id);
       expect(result).toEqual(mockRestaurant);
     });
   });
