@@ -51,7 +51,7 @@ export class RestaurantsController {
     @Param('id') // HERE we import the param
     id: string,
   ): Promise<Restaurant> {
-    return this.restaurantsService.findByID(id);
+    return this.restaurantsService.findById(id);
   }
 
   // Update a restaurant => PUT /restaurants/:id
@@ -64,10 +64,10 @@ export class RestaurantsController {
     restaurant: UpdateRestaurantDto,
     @CurrentUser() user: User,
   ): Promise<Restaurant> {
-    const rest = await this.restaurantsService.findByID(id);
+    const rest = await this.restaurantsService.findById(id);
 
     // Limit the edition of the restaurant to the owner
-    if (rest.user.toString() !== user._id.toString()) {
+    if (rest.user !== user._id) {
       throw new ForbiddenException(
         'You are not authorized to update this restaurant',
       );
@@ -83,7 +83,7 @@ export class RestaurantsController {
     @Param('id') // HERE we import the param
     id: string,
   ): Promise<{ deleted: Boolean }> {
-    await this.restaurantsService.findByID(id);
+    await this.restaurantsService.findById(id);
 
     const restaurant = this.restaurantsService.delete(id);
 

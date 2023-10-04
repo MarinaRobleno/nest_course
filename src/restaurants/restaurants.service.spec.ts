@@ -112,12 +112,12 @@ describe('RestaurantsService', () => {
         .spyOn(model, 'findById')
         .mockResolvedValueOnce(mockRestaurant as any);
 
-      const result = await service.findByID(mockRestaurant._id);
+      const result = await service.findById(mockRestaurant._id);
       expect(result).toEqual(mockRestaurant);
     });
 
     it('should throw wrong moongose id error', async () => {
-      await expect(service.findByID('wrongid')).rejects.toThrow(
+      await expect(service.findById('wrongid')).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -126,7 +126,7 @@ describe('RestaurantsService', () => {
       const mockError = new NotFoundException('Restaurant not found.');
       jest.spyOn(model, 'findById').mockRejectedValue(mockError);
 
-      await expect(service.findByID(mockRestaurant._id)).rejects.toThrow(
+      await expect(service.findById(mockRestaurant._id)).rejects.toThrow(
         NotFoundException,
       );
     });
